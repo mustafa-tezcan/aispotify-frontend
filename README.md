@@ -86,9 +86,19 @@ graph TD
 ---
 
 ## 🎨 Screenshots
-<img width="591" height="992" alt="Screenshot 2025-12-03 at 12 17 30" src="https://github.com/user-attachments/assets/2e5f97c9-efd8-4358-89af-971b3c7628dd" />
-<img width="591" height="992" alt="Screenshot 2025-12-03 at 12 17 30" src="https://github.com/user-attachments/assets/63997de9-fd90-4b3b-9254-e7bbf9bf7f76" />
-<img width="545" height="993" alt="Screenshot 2025-12-03 at 12 18 32" src="https://github.com/user-attachments/assets/11bdfbd2-bfb2-48f0-a9ad-059e194049b2" />
+### Authentication & Home
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/11bdfbd2-bfb2-48f0-a9ad-059e194049b2" width="30%" />
+  <img src="https://github.com/user-attachments/assets/63997de9-fd90-4b3b-9254-e7bbf9bf7f76" width="30%" />
+  <img src="https://github.com/user-attachments/assets/2e5f97c9-efd8-4358-89af-971b3c7628dd" width="30%" />
+</p>
+
+<p align="center">
+  <i>Spotify login • AI prompt input • Generated playlist</i>
+</p>
+
+
 
 
 
