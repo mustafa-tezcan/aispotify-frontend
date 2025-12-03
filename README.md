@@ -1,50 +1,113 @@
-# Welcome to your Expo app 👋
+# 📱 Postify Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> AI-powered Spotify playlist creator mobile application
 
-## Get started
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-1. Install dependencies
+## 🎯 Overview
 
-   ```bash
-   npm install
-   ```
+Postify is a React Native mobile application that allows users to create personalized Spotify playlists using AI. Simply describe what kind of music you want, and AI will generate a curated playlist that you can instantly export to your Spotify account.
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## ✨ Features
 
-In the output, you'll find options to open the app in a
+- 🔐 **Spotify OAuth Login** - Secure authentication with Spotify
+- 🤖 **AI Playlist Generation** - Create playlists using natural language prompts
+- 🎵 **Spotify Player Integration** - Preview songs directly in the app
+- ⬆️ **Export to Spotify** - Save generated playlists to your Spotify account
+- 💾 **Persistent Authentication** - Stay logged in with secure token storage
+- 🎨 **Modern UI** - Spotify-inspired dark theme interface
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🛠️ Tech Stack
 
-## Get a fresh project
+| Technology | Purpose |
+|-----------|---------|
+| React Native + Expo | Cross-platform mobile framework |
+| NativeWind | TailwindCSS for React Native |
+| Expo Router | File-based navigation |
+| Context API | State management |
+| Expo SecureStore | Encrypted token storage |
+| React Native WebView | Spotify player integration |
+| Expo WebBrowser | OAuth flow |
 
-When you're ready, run:
+---
 
-```bash
-npm run reset-project
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18 or higher
+- npm or yarn
+- Expo CLI (`npm install -g expo-cli`)
+- iOS Simulator (macOS) or Android Emulator
+- Backend API running (see [Backend README](../backend/README.md))
+
+
+## 📱 App Flow
+
+### Authentication Flow
+```mermaid
+graph TD
+    A[App Opens] --> B{Token exists?}
+    B -->|Yes| C[Fetch User Info]
+    B -->|No| D[Show Login Screen]
+    D --> E[Click Login Button]
+    E --> F[Open Spotify Authorization]
+    F --> G[User Grants Permission]
+    G --> H[Backend Callback]
+    H --> I[Generate JWT]
+    I --> J[Deep Link Returns JWT]
+    J --> K[Save to SecureStore]
+    K --> C
+    C --> L[Navigate to Home]
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Playlist Generation Flow
+```
+1. User enters prompt (e.g., "90s rock songs")
+2. Click "Generate Playlist"
+3. API call: GET /api/playlist/suggest?prompt=...
+4. Backend calls OpenAI GPT-4o-mini
+5. Backend fetches Spotify track details
+6. Display songs with album covers
+7. User clicks song → Modal with Spotify player
+8. Click "Export to Spotify"
+9. API call: POST /api/playlist/export
+10. Playlist created in user's Spotify account
+11. Success message
+```
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 🎨 Screenshots
+<img width="591" height="992" alt="Screenshot 2025-12-03 at 12 17 30" src="https://github.com/user-attachments/assets/2e5f97c9-efd8-4358-89af-971b3c7628dd" />
+<img width="591" height="992" alt="Screenshot 2025-12-03 at 12 17 30" src="https://github.com/user-attachments/assets/63997de9-fd90-4b3b-9254-e7bbf9bf7f76" />
+<img width="545" height="993" alt="Screenshot 2025-12-03 at 12 18 32" src="https://github.com/user-attachments/assets/11bdfbd2-bfb2-48f0-a9ad-059e194049b2" />
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Join the community
 
-Join our community of developers creating universal apps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+---
+
+## 🔐 Security Features
+
+- **Encrypted Token Storage**: JWT stored using Expo SecureStore (hardware-backed encryption on supported devices)
+- **OAuth 2.0**: Industry-standard Spotify authentication
+- **No Credentials Stored**: User passwords never touch the app
+- **HTTPS Only**: All API requests use secure connections (production)
+- **Token Expiration**: Automatic logout on invalid tokens
+
+
+
+
+- [Backend API Documentation](../backend/README.md)
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api)
+- [Expo Documentation](https://docs.expo.dev/)
