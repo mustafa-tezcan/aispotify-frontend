@@ -89,9 +89,13 @@ graph TD
 ### Authentication & Home
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/11bdfbd2-bfb2-48f0-a9ad-059e194049b2" width="30%" />
-  <img src="https://github.com/user-attachments/assets/63997de9-fd90-4b3b-9254-e7bbf9bf7f76" width="30%" />
-  <img src="https://github.com/user-attachments/assets/2e5f97c9-efd8-4358-89af-971b3c7628dd" width="30%" />
+  <img  src="https://github.com/user-attachments/assets/ac7baad6-a4fb-41b8-b427-59fac497f293" width="30%" />
+  <img src="https://github.com/user-attachments/assets/7c256102-962f-46a1-b94f-5721abe95aec"  width="30%"/>
+  <img  src="https://github.com/user-attachments/assets/8ec8cfd1-c0e3-4a78-820f-6c871cb0c5b3" width="30%" />
+
+
+
+
 </p>
 
 <p align="center">
