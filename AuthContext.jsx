@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { getToken, saveToken, deleteToken } from "./AuthService";
+import { userInfo } from "./Fetch"; // ✅ Import ekle
 
 export const AuthContext = createContext();
 
@@ -21,9 +22,31 @@ export const AuthProvider = ({ children }) => {
   };
 
   const checkLogin = async () => {
-    const token = await getToken();
-    if (token) setUserToken(token);
-    setLoading(false);
+    try {
+      const token = await getToken();
+      console.log("🔑 Token:", token); // ✅ Bu satırı ekle
+
+      if (token) {
+        setUserToken(token);
+
+        const result = await userInfo();
+        console.log("👤 User result:", result); // ✅ Bu satırı ekle
+
+        if (result.success) {
+          setUser(result.data);
+        } else {
+          console.log("Token geçersiz, logout yapılıyor");
+          await logout();
+        }
+      } else {
+        console.log("❌ Token bulunamadı"); // ✅ Bu satırı ekle
+      }
+    } catch (error) {
+      console.error("checkLogin error:", error);
+      await logout();
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

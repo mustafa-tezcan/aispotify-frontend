@@ -1,7 +1,7 @@
 import { getToken } from "./AuthService"; // auth.js dosyasından getToken fonksiyonunu içe aktar
 
 const apiRequest = async ({
-  baseUrl = "http://192.168.1.2:5035", //backend url
+  baseUrl = "http://localhost:5035",
   endpoint,
   method = "GET",
   queryParams = {},
@@ -9,7 +9,7 @@ const apiRequest = async ({
 }) => {
   const queryString = new URLSearchParams(queryParams).toString();
   const url = `${baseUrl}${endpoint}${queryString ? `?${queryString}` : ""}`;
-  const token = await getToken(); // Token'ı alıyoruz
+  const token = await getToken();
 
   const options = {
     method,
@@ -20,13 +20,35 @@ const apiRequest = async ({
     ...(body && { body: JSON.stringify(body) }),
   };
 
+  console.log("=== API REQUEST ==="); // ✅ Log ekle
+  console.log("URL:", url);
+  console.log("Method:", method);
+  console.log("Headers:", options.headers);
+  console.log("Body:", body);
+  console.log("=== END ===");
+
   return fetch(url, options)
     .then(async (res) => {
-      const json = await res.json();
+      console.log("=== API RESPONSE ==="); // ✅ Log ekle
+      console.log("Status:", res.status);
+      console.log("OK:", res.ok);
+
+      const text = await res.text(); // ✅ Önce text olarak al
+      console.log("Raw Response:", text);
+      console.log("=== END ===");
+
+      if (!text) {
+        // ✅ Boş response kontrolü
+        throw new Error("Backend boş response döndü");
+      }
+
+      const json = JSON.parse(text); // ✅ Manuel parse
+
       if (!res.ok) throw new Error(json.message || "Bir hata oluştu");
       return json;
     })
     .catch((err) => {
+      console.error("❌ API Error:", err);
       throw err;
     });
 };
@@ -59,49 +81,22 @@ export const signIn = async (username, password) => {
   }
 };
 
-//public listelerin çekilmesi
-export const getPublicLists = async () => {
-  try {
-    const response = await apiRequest({
-      endpoint: "/api/lists/public", // public listeler endpointi
-      method: "GET",
-    });
-    return { success: true, data: response };
-  } catch (err) {
-    return { success: false, message: err.message };
-  }
-};
-
-//liste oluştur
-
-export const createList = async (listData) => {
-  try {
-    const response = await apiRequest({
-      endpoint: "/api/lists",
-      method: "POST",
-      body: listData,
-    });
-
-    return { success: true, data: response };
-  } catch (err) {
-    return { success: false, message: err.message };
-  }
-};
-
 // kullanıcı uygulamayı kapattığında state silindiği için tekrar açtığında
 // jwt token ile bilgilerini çekiyoruz
 export const userInfo = async () => {
   try {
     const response = await apiRequest({
-      endpoint: "/api/account/me",
+      endpoint: "/api/auth/me",
       method: "GET",
     });
 
     const user = {
-      username: response.username ?? response.userName, // normalize
-      email: response.email,
-      profilePicture: response.profilePicture,
       id: response.id,
+      username: response.displayName, // normalize
+      email: response.email,
+      profilePicture: response.profileImageUrl,
+      spotifyId: response.spotifyId,
+      followers: response.followers,
     };
 
     return { success: true, data: user };
@@ -110,73 +105,45 @@ export const userInfo = async () => {
   }
 };
 
-//kullanıcı bilgilerini güncelleme fonksiyounu
-export const userUpdate = async ({ user }) => {
+export const suggest = async (prompt) => {
+  // ✅ prompt parametresi ekle
   try {
     const response = await apiRequest({
-      endpoint: "/api/account/update-profile",
-      method: "PUT",
-      body: user,
+      endpoint: "/api/playlist/suggest", // ✅ "suggesest" → "suggest" (typo düzelt)
+      method: "GET",
+      queryParams: { prompt }, // ✅ Prompt'u query param olarak gönder
     });
-    const token = response.token;
-    const updatedUser = {
-      username: response.username,
-      email: response.email,
-      profilePicture: response.profilePicture,
-    };
 
-    if (token) {
-      return { success: true, token, user: updatedUser };
-    } else {
-      throw new Error("Token alınamadı");
-    }
-  } catch (err) {
-    return { success: false, message: err.message };
+    // ✅ Backend zaten { success: true, data: [...] } dönüyor
+    return response; // Direkt döndür
+  } catch (error) {
+    return { success: false, message: error.message };
   }
 };
 
-//list optionsları post ediyoruz.
-export const createListOption = async ({ listId, name, imageUrl }) => {
+export const exportToSpotify = async (name, description, tracks) => {
   try {
+    console.log("=== EXPORT REQUEST ===");
+    console.log("Name:", name);
+    console.log("Description:", description);
+    console.log("Tracks:", tracks);
+    console.log("=== END ===");
+
     const response = await apiRequest({
-      endpoint: "/api/listoptions", // backend ListOption POST endpoint
+      endpoint: "/api/playlist/export",
       method: "POST",
-      body: {
-        listId,
-        name,
-        imageUrl,
-      },
+      body: { name, description, tracks },
     });
 
-    return { success: true, data: response };
-  } catch (err) {
-    return { success: false, message: err.message };
-  }
-};
+    console.log("=== EXPORT RESPONSE ===");
+    console.log("Response:", response);
+    console.log("=== END ===");
 
-//kendi listeleriizi çekicez.
-export const getMyLists = async () => {
-  try {
-    const response = await apiRequest({
-      endpoint: "/api/lists/my-lists",
-      method: "GET",
-    });
-
-    return { success: true, data: response };
-  } catch (err) {
-    return { success: false, message: err.message };
-  }
-};
-
-//list id ile list optionsları alma .
-export const getListDetail = async ({ listId }) => {
-  try {
-    const response = await apiRequest({
-      endpoint: "/api/listoptions/" + listId,
-      method: "GET",
-    });
-    return { success: true, data: response };
-  } catch (err) {
-    return { success: false, message: err.message };
+    return response;
+  } catch (error) {
+    console.log("=== EXPORT ERROR ===");
+    console.log("Error:", error);
+    console.log("=== END ===");
+    return { success: false, message: error.message };
   }
 };

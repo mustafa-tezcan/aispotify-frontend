@@ -1,16 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { router } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
+import { AuthContext } from "../AuthContext"; // ✅ Context ekle
 
 export default function Index() {
-  useEffect(() => {
-    // Root layout'un mount olması için küçük bir gecikme
-    const timer = setTimeout(() => {
-      router.replace("(auth)/sign-in");
-    }, 0);
+  const { userToken, loading } = useContext(AuthContext); // ✅ Token ve loading al
 
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => {
+    // ✅ Loading bitene kadar bekle
+    if (loading) return;
+
+    // ✅ Token varsa home, yoksa login
+    if (userToken) {
+      router.replace("/(tabs)/home");
+    } else {
+      router.replace("/(auth)/sign-in");
+    }
+  }, [loading, userToken]); // ✅ Dependency array
 
   return (
     <View className="flex-1 justify-center items-center bg-white">
